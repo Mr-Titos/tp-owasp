@@ -13,10 +13,6 @@ if(isset($_GET['id'])) {
 <h1>Information de l'utilisateur <?= $user->email ?></h1>
 <table>
     <tr>
-        <td>id</td>
-        <td><?= $user->id ?></td>
-    </tr>
-    <tr>
         <td>username</td>
         <td><?= $user->username ?></td>
     </tr>
