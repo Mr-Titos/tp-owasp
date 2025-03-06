@@ -1,8 +1,16 @@
 <?php
 require_once('functions.php');
 
+function sanitizeInput($data) {
+    return htmlspecialchars(trim($data), ENT_QUOTES, 'UTF-8');
+}
+
 if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['password'])) {
-    $result = saveUser($_POST['username'], $_POST['email'], $_POST['password']);
+    $username = sanitizeInput($_POST['username']);
+    $email = sanitizeInput($_POST['email']);
+    $password = sanitizeInput($_POST['password']);
+
+    $result = saveUser($username, $email, $password);
     if($result === true) {
         header('Location: index.php');
     } else {
@@ -10,6 +18,7 @@ if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['passwor
     }
 }
 ?>
+
 
 <html>
 <head>
@@ -25,35 +34,35 @@ if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['passwor
     <h1>Inscription</h1>
     <form action="/register.php" method="post" class="needs-validation" novalidate onsubmit="return validatePassword()">
         <div class="form-group">
-            <label for="email">Username :</label>
-            <input type="text" class="form-control" id="username" name="username" required>
-            <div class="invalid-feedback">
-                S'il vous plaît entrez un nom d'utilisateur.
-            </div>
+        <label for="username">Nom d'utilisateur :</label>
+        <input type="text" class="form-control" id="username" name="username" required>
+        <div class="invalid-feedback">
+            S'il vous plaît entrez un nom d'utilisateur.
         </div>
-        <div class="form-group">
-            <label for="email">Adresse email :</label>
-            <input type="email" class="form-control" id="email" name="email" required>
-            <div class="invalid-feedback">
-                S'il vous plaît entrez une adresse email valide.
-            </div>
+    </div>
+    <div class="form-group">
+        <label for="email">Adresse email :</label>
+        <input type="email" class="form-control" id="email" name="email" required>
+        <div class="invalid-feedback">
+            S'il vous plaît entrez une adresse email valide.
         </div>
-        <div class="form-group">
-            <label for="password">Mot de passe :</label>
-            <input type="password" class="form-control" id="password" name="password" required>
-            <div class="invalid-feedback">
-                S'il vous plaît entrez un mot de passe.
-            </div>
-            <small id="passwordError" class="form-text text-danger"></small>
+    </div>
+    <div class="form-group">
+        <label for="password">Mot de passe :</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+        <div class="invalid-feedback">
+            S'il vous plaît entrez un mot de passe.
         </div>
-        <div class="form-group">
-            <label for="password-confirm">Confirmez le mot de passe :</label>
-            <input type="password" class="form-control" id="password-confirm" name="password-confirm" required>
-            <div class="invalid-feedback">
-                S'il vous plaît confirmez votre mot de passe.
-            </div>
+        <small id="passwordError" class="form-text text-danger"></small>
+    </div>
+    <div class="form-group">
+        <label for="password-confirm">Confirmez le mot de passe :</label>
+        <input type="password" class="form-control" id="password-confirm" name="password-confirm" required>
+        <div class="invalid-feedback">
+            S'il vous plaît confirmez votre mot de passe.
         </div>
-        <button type="submit" class="btn btn-primary">S'inscrire</button>
+    </div>
+    <button type="submit" class="btn btn-primary">S'inscrire</button>
     </form>
     <script>
         var password = document.getElementById("password");
@@ -81,25 +90,6 @@ if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['passwor
 
         password.onchange = validatePassword;
         confirm_password.onkeyup = validatePassword;
-
-        // Example starter JavaScript for disabling form submissions if there are invalid fields
-        (function() {
-            'use strict';
-            window.addEventListener('load', function() {
-                // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                var forms = document.getElementsByClassName('needs-validation');
-                // Loop over them and prevent submission
-                var validation = Array.prototype.filter.call(forms, function(form) {
-                    form.addEventListener('submit', function(event) {
-                        if (form.checkValidity() === false) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-                        form.classList.add('was-validated');
-                    }, false);
-                });
-            }, false);
-        })();
     </script>
 </div>
 </body>
