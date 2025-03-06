@@ -1,11 +1,24 @@
 <?php
 require_once('functions.php');
+session_start();
+
 $user = null;
-if(isset($_GET['id'])) {
-    $users = getUser($_GET['id']);
-    if(!empty($users)) {
-        $user = $users[0];
+if (isset($_SESSION['user']) && isset($_GET['id'])) {
+    $loggedInUserId = $_SESSION['user']->id;
+    $requestedUserId = $_GET['id'];
+
+    if ($loggedInUserId === $requestedUserId) {
+        $users = getUser($requestedUserId);
+        if (!empty($users)) {
+            $user = $users[0];
+        }
+    } else {
+        echo "You are not authorized to view this information.";
+        exit;
     }
+} else {
+    echo "Invalid request.";
+    exit;
 }
 ?>
 
