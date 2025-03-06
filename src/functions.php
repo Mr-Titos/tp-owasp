@@ -2,8 +2,10 @@
 
 function connectDb()
 {
+    $config = require('config.php');
+    $dsn = "mysql:host={$config['db_host']};dbname={$config['db_name']}";
     try {
-        $conn = new PDO("mysql:host=db;dbname=app_db", 'app_user', 'app_password');
+        $conn = new PDO($dsn, $config['db_user'], $config['db_password']);
         // set the PDO error mode to exception
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $conn;
