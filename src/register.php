@@ -23,9 +23,8 @@ if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['passwor
 <body>
 <div class="container">
     <h1>Inscription</h1>
-    <form action="/register.php" method="post" class="needs-validation" novalidate>
+    <form action="/register.php" method="post" class="needs-validation" novalidate onsubmit="return validatePassword()">
         <div class="form-group">
-            <label for="username">Nom d'utilisateur :</label>
             <input type="text" class="form-control" id="username" name="username" required>
             <div class="invalid-feedback">
                 S'il vous plaît entrez un nom d'utilisateur.
@@ -44,6 +43,7 @@ if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['passwor
             <div class="invalid-feedback">
                 S'il vous plaît entrez un mot de passe.
             </div>
+            <small id="passwordError" class="form-text text-danger"></small>
         </div>
         <div class="form-group">
             <label for="password-confirm">Confirmez le mot de passe :</label>
@@ -58,9 +58,18 @@ if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['passwor
         var password = document.getElementById("password");
         var confirm_password = document.getElementById("password-confirm");
 
-        function validatePassword(){
-            console.log('here');
-            if(password.value != confirm_password.value) {
+        function validatePassword() {
+            const passwordValue = password.value;
+            const errorMessage = document.getElementById('passwordError');
+            const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+            if (!regex.test(passwordValue)) {
+                errorMessage.textContent = 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.';
+                return false;
+            }
+            errorMessage.textContent = '';
+
+            if (passwordValue != confirm_password.value) {
                 confirm_password.setCustomValidity("Les mots de passe ne correspondent pas");
                 return false;
             } else {

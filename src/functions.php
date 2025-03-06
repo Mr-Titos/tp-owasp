@@ -42,6 +42,10 @@ function getUser($id) {
 }
 
 function saveUser($username, $email, $password) {
+    if (!isPasswordStrong($password)) {
+        throw new Exception('Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.');
+    }
+
     $connexion = connectDb();
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     $sql = 'INSERT INTO users(id, username, email, password) VALUES(UUID(), :username, :email, :password)';
@@ -51,4 +55,9 @@ function saveUser($username, $email, $password) {
     $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
 
     return $stmt->execute();
+}
+
+function isPasswordStrong($password) {
+    $regex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
+    return preg_match($regex, $password);
 }
