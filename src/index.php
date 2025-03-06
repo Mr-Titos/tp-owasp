@@ -1,8 +1,15 @@
 <?php
 require_once('functions.php');
 session_start();
+$csrfToken = generateCsrfToken();
+
+
 $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['password'])) {
+    if (!isset($_POST['csrf_token']) || !validateCsrfToken($_POST['csrf_token'])) {
+        die('Invalid CSRF token');
+    }
+
     $users = logUser($_POST['email'], $_POST['password']);
     if(!empty($users)) {
         $user = $users[0];
@@ -29,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
     <?php if(!$user): ?>
     <h1>Connexion</h1>
         <form action="/" method="POST">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
             <div class="form-group">
                 <label for="exampleInputEmail1">Email address</label>
                 <input name="email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">

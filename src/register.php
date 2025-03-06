@@ -1,21 +1,29 @@
 <?php
 require_once('functions.php');
+session_start();
+$csrfToken = generateCsrfToken();
 
-function sanitizeInput($data) {
-    return htmlspecialchars(trim($data), ENT_QUOTES, 'UTF-8');
-}
-
-if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['password'])) {
-    $username = sanitizeInput($_POST['username']);
-    $email = sanitizeInput($_POST['email']);
-    $password = sanitizeInput($_POST['password']);
-
-    $result = saveUser($username, $email, $password);
-    if($result === true) {
-        header('Location: index.php');
-    } else {
-        echo "Une erreur est survenue " . $result;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['csrf_token']) || !validateCsrfToken($_POST['csrf_token'])) {
+        die('Invalid CSRF token');
     }
+
+    if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['password'])) {
+        $username = sanitizeInput($_POST['username']);
+        $email = sanitizeInput($_POST['email']);
+        $password = sanitizeInput($_POST['password']);
+
+        $result = saveUser($username, $email, $password);
+        if ($result === true) {
+            header('Location: index.php');
+        } else {
+            echo "Une erreur est survenue " . $result;
+        }
+    }
+}
+function sanitizeInput($data)
+{
+    return htmlspecialchars(trim($data), ENT_QUOTES, 'UTF-8');
 }
 ?>
 
@@ -33,6 +41,7 @@ if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['passwor
 <div class="container">
     <h1>Inscription</h1>
     <form action="/register.php" method="post" class="needs-validation" novalidate onsubmit="return validatePassword()">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
         <div class="form-group">
         <label for="username">Nom d'utilisateur :</label>
         <input type="text" class="form-control" id="username" name="username" required>

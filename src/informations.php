@@ -1,7 +1,6 @@
 <?php
 require_once('functions.php');
 session_start();
-
 $user = null;
 if (isset($_SESSION['user']) && isset($_GET['id'])) {
     $loggedInUserId = $_SESSION['user']->id;
