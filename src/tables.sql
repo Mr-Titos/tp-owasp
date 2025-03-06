@@ -1,8 +1,11 @@
 CREATE TABLE users (
-id INT AUTO_INCREMENT PRIMARY KEY,
-username VARCHAR(255) NOT NULL,
-email VARCHAR(255) NOT NULL,
-password VARCHAR(255) NOT NULL
+    id CHAR(36) PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL
 );
 
-INSERT INTO users VALUES (null, 'mflasquin','maxime.flasquin@gmail.com','password');
+INSERT INTO users (id, username, email, password)
+    VALUES (UUID(), 'mflasquin', 'maxime.flasquin@gmail.com', 'password');
+INSERT INTO users (id, username, email, password)
+    VALUES (UUID(), 'at', 'at@gmail.com', 'password2');

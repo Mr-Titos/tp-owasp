@@ -25,17 +25,21 @@ function logUser($email, $password)
 
 function getUser($id) {
     $connexion = connectDb();
-    $sql = 'SELECT * FROM users WHERE id = ' . $id;
+    $sql = 'SELECT * FROM users WHERE id = :id';
     $stmt = $connexion->prepare($sql);
+    $stmt->bindParam(':id', $id, PDO::PARAM_STR);
     $stmt->execute();
 
     return $stmt->fetchAll(PDO::FETCH_OBJ);
 }
 
-function saveUser($email, $username, $password) {
+function saveUser($username, $email, $password) {
     $connexion = connectDb();
-    $sql = 'INSERT INTO users(username,email,password) VALUES("'.$email.'","'.$username.'","'.$password.'")';
+    $sql = 'INSERT INTO users(id, username, email, password) VALUES(UUID(), :username, :email, :password)';
     $stmt = $connexion->prepare($sql);
+    $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+    $stmt->bindParam(':password', $password, PDO::PARAM_STR);
 
     return $stmt->execute();
 }
