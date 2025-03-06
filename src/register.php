@@ -25,6 +25,7 @@ if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['passwor
     <h1>Inscription</h1>
     <form action="/register.php" method="post" class="needs-validation" novalidate onsubmit="return validatePassword()">
         <div class="form-group">
+            <label for="email">Username :</label>
             <input type="text" class="form-control" id="username" name="username" required>
             <div class="invalid-feedback">
                 S'il vous plaît entrez un nom d'utilisateur.

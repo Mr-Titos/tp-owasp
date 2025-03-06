@@ -2,8 +2,8 @@
 require_once('functions.php');
 session_start();
 $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
-if (isset($_GET['email']) && isset($_GET['password'])) {
-    $users = logUser($_GET['email'], $_GET['password']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['password'])) {
+    $users = logUser($_POST['email'], $_POST['password']);
     if(!empty($users)) {
         $user = $users[0];
         $_SESSION['user'] = $user;
@@ -28,22 +28,22 @@ if (isset($_GET['email']) && isset($_GET['password'])) {
 <div class="container">
     <?php if(!$user): ?>
     <h1>Connexion</h1>
-    <form action="/" method="GET">
-        <div class="form-group">
-            <label for="exampleInputEmail1">Email address</label>
-            <input name="email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-        </div>
-        <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
-            <input name="password" type="password" class="form-control" id="exampleInputPassword1">
-        </div>
-        <div class="form-group">
-            <label for="stayConnected">Rester connecté</label>
-            <input name="stayConnected" type="checkbox" id="stayConnected">
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+        <form action="/" method="POST">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Email address</label>
+                <input name="email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Password</label>
+                <input name="password" type="password" class="form-control" id="exampleInputPassword1">
+            </div>
+            <div class="form-group">
+                <label for="stayConnected">Rester connecté</label>
+                <input name="stayConnected" type="checkbox" id="stayConnected">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
     <a href="register.php">Je m'inscrit</a>
     <?php else: ?>
         <h1>Bienvenue <?= $user->email ?></h1>
