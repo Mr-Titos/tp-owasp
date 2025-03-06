@@ -18,11 +18,17 @@ function connectDb()
 function logUser($email, $password)
 {
     $connexion = connectDb();
-    $sql = 'SELECT * FROM users WHERE email = "' . $email . '" AND password = "' .$password . '"';
+    $sql = 'SELECT * FROM users WHERE email = :email';
     $stmt = $connexion->prepare($sql);
+    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
     $stmt->execute();
+    $user = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-    return $stmt->fetchAll(PDO::FETCH_OBJ);
+    if ($user[0] && password_verify($password, $user[0]->password)) {
+        return $user;
+    }
+
+    return null;
 }
 
 function getUser($id) {
@@ -37,11 +43,12 @@ function getUser($id) {
 
 function saveUser($username, $email, $password) {
     $connexion = connectDb();
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     $sql = 'INSERT INTO users(id, username, email, password) VALUES(UUID(), :username, :email, :password)';
     $stmt = $connexion->prepare($sql);
     $stmt->bindParam(':username', $username, PDO::PARAM_STR);
     $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-    $stmt->bindParam(':password', $password, PDO::PARAM_STR);
+    $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
 
     return $stmt->execute();
 }
